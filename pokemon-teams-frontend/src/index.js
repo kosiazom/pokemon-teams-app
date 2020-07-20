@@ -7,34 +7,61 @@ fetch(TRAINERS_URL)
 .then(resp => resp.json())
 .then( trainersObject => {renderAllTeams(trainersObject)})
 
+function addPokemon(){
+    
+}
 
 function renderAllTeams(trainersObject) {
     trainersObject.forEach(trainer => {renderTrainer(trainer)
-         });
+    });
 }
 
 function renderTrainer(trainer) {
-    let main = document.getElementsByName('main')
+    let main = document.querySelector('main')
     let div = document.createElement('div')
     div.className = 'card'
-    div.dataset.number = trainer.id
-
+    div.dataset.id = trainer.id
+    
     let button = document.createElement('button')
-    button.dataset.number = trainer.id
-    div.innerText = trainer.name
-    console.log(main)
-    // main.append(div)
+    button.dataset.trainerId = trainer.id
+    button.textContent = "Add Pokemon"
+    
+    let p = document.createElement('p')
+    p.textContent = trainer.name
+    p.append(button)
+    div.append(p)
+    main.append(div)
+    
+    let ul = document.createElement('ul')
+    trainer.pokemons.forEach(pokemon => renderPokemon(pokemon, ul))
+    div.append(ul)
+
+    button.addEventListener('click',function(event){
+        let trainer_id = trainer.id
+        let pokemonObj = {trainer_id}
+
+        fetch(POKEMONS_URL,{
+            method:'POST',
+            headers: {
+                "content-type": "application/json",
+                "accept": "application/json"
+              },
+            body:JSON.stringify(pokemonObj)
+
+        })
+        .then(resp => resp.json)
+        .then(renderPokemon)
+    })
 }
 
-function renderPokemon(pokemon) {
-    let ul = document.createElement('ul')
-    
+function renderPokemon(pokemon, ul) {
     let li = document.createElement('li')
+    let button = document.createElement('button')
+    button.classList += "release"
+    button.dataset.pokemonId = pokemon.id
+    button.textContent = "Release"
 
-    let classButton = document.createElement('button')
-    classButton.className = 'release'
-    classButton
-
-    li.insertAdjacentElement("afterbegin", classButton)
-
+    li.textContent = pokemon.nickname + `(${pokemon.species})`
+    li.append(button)
+    ul.append(li)
 }
