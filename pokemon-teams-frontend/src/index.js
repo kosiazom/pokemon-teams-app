@@ -40,6 +40,8 @@ function renderTrainer(trainer) {
         let trainer_id = trainer.id
         let pokemonObj = {trainer_id}
 
+    if (ul.getElementsByTagName('li').length < 6) {
+
         fetch(POKEMONS_URL,{
             method:'POST',
             headers: {
@@ -51,8 +53,10 @@ function renderTrainer(trainer) {
         })
         .then(resp => resp.json())
         .then(pokemon=>renderPokemon(pokemon, ul))
-    })
-}
+    }
+})
+
+
 
 function renderPokemon(pokemon, ul) {
     let li = document.createElement('li')
@@ -64,4 +68,15 @@ function renderPokemon(pokemon, ul) {
     li.textContent = pokemon.nickname + `(${pokemon.species})`
     li.append(button)
     ul.append(li)
-}
+
+    button.addEventListener('click', function(e){
+        
+        
+        fetch(POKEMONS_URL +`/${pokemon.id}`, {
+            method: 'DELETE'
+        })
+        .then(resp => resp.json())
+        .then(button.parentElement.remove())
+        }   
+    )
+}}
