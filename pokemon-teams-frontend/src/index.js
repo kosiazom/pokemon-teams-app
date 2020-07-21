@@ -49,8 +49,8 @@ function renderTrainer(trainer) {
             body:JSON.stringify(pokemonObj)
 
         })
-        .then(resp => resp.json)
-        .then(renderPokemon)
+        .then(resp => resp.json())
+        .then(pokemon=>renderPokemon(pokemon, ul))
     })
 }
 
